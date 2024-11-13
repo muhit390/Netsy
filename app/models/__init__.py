@@ -1,5 +1,5 @@
+from .db import db, environment, SCHEMA
 from .user import User
-from .db import environment, SCHEMA
 from .product import Product
 from .review import Review
 from .product_image import ProductImage
@@ -7,11 +7,11 @@ from .shopping_cart import ShoppingCart
 from .favorite import Favorite
 
 
-__all__ = [
-    "User",
-    "Product",
-    "Review",
-    "ProductImage",
-    "ShoppingCart",
-    "Favorite"
-]
+# __all__ = [
+#     "User",
+#     "Product",
+#     "Review",
+#     "ProductImage",
+#     "ShoppingCart",
+#     "Favorite"
+# ]

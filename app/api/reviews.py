@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request
-from ..models import Review
-from ..extensions import db
+from app.models import Review, db
 
-bp = Blueprint('reviews', __name__, url_prefix='/products/<int:product_id>/reviews')
 
-@bp.route('', methods=['POST'])
+reviews_bp = Blueprint('reviews', __name__, url_prefix='/products/<int:product_id>/reviews')
+
+@reviews_bp.route('', methods=['POST'])
 def add_review(product_id):
     data = request.get_json()
     
@@ -26,7 +26,7 @@ def add_review(product_id):
         db.session.rollback()
         return jsonify({"message": "Error adding review", "error": str(e)}), 500
 
-@bp.route('', methods=['GET'])
+@reviews_bp.route('', methods=['GET'])
 def get_reviews(product_id):
     reviews = Review.query.filter_by(product_id=product_id).all()
     
@@ -40,7 +40,7 @@ def get_reviews(product_id):
         "rating": r.rating
     } for r in reviews])
 
-@bp.route('/<int:review_id>', methods=['PUT'])
+@reviews_bp.route('/<int:review_id>', methods=['PUT'])
 def update_review(product_id, review_id):
     data = request.get_json()
 
@@ -59,7 +59,7 @@ def update_review(product_id, review_id):
         db.session.rollback()
         return jsonify({"message": "Error updating review", "error": str(e)}), 500
 
-@bp.route('/<int:review_id>', methods=['DELETE'])
+@reviews_bp.route('/<int:review_id>', methods=['DELETE'])
 def delete_review(product_id, review_id):
 
     review = Review.query.filter_by(id=review_id, product_id=product_id).first()

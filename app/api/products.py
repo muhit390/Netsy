@@ -1,10 +1,9 @@
 from flask import Blueprint, jsonify, request
-from ..models import Product
-from ..extensions import db
+from app.models import Product, db
 
-bp = Blueprint('products', __name__, url_prefix='/products')
+products_bp = Blueprint('products', __name__, url_prefix='/products')
 
-@bp.route('', methods=['POST'])
+@products_bp.route('', methods=['POST'])
 def create_product():
     data = request.get_json()
 
@@ -28,7 +27,7 @@ def create_product():
         db.session.rollback()
         return jsonify({"message": "Error creating product", "error": str(e)}), 500
 
-@bp.route('', methods=['GET'])
+@products_bp.route('', methods=['GET'])
 def get_products():
     products = Product.query.all()
     return jsonify([{
@@ -39,7 +38,7 @@ def get_products():
         "quantity": p.quantity
     } for p in products])
 
-@bp.route('/<int:id>', methods=['GET'])
+@products_bp.route('/<int:id>', methods=['GET'])
 def get_product(id):
     product = Product.query.get(id)
     if product:
@@ -53,7 +52,7 @@ def get_product(id):
         })
     return jsonify({"message": "Product not found"}), 404
 
-@bp.route('/<int:id>', methods=['PUT'])
+@products_bp.route('/<int:id>', methods=['PUT'])
 def update_product(id):
     data = request.get_json()
 
@@ -74,7 +73,7 @@ def update_product(id):
         db.session.rollback()
         return jsonify({"message": "Error updating product", "error": str(e)}), 500
 
-@bp.route('/<int:id>', methods=['DELETE'])
+@products_bp.route('/<int:id>', methods=['DELETE'])
 def delete_product(id):
 
     product = Product.query.get(id)
