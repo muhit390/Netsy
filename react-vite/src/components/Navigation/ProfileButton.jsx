@@ -1,20 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaUserCircle } from 'react-icons/fa';
+import { useNavigate } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
 import { thunkLogout } from "../../redux/session";
-import OpenModalMenuItem from "./OpenModalMenuItem";
-import LoginFormModal from "../LoginFormModal";
-import SignupFormModal from "../SignupFormModal";
+import "./Navigation.css";
 
 function ProfileButton() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const user = useSelector((store) => store.session.user);
   const ulRef = useRef();
 
   const toggleMenu = (e) => {
-    e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
-    setShowMenu(!showMenu);
+    e.stopPropagation();
+    setShowMenu((prev) => !prev);
   };
 
   useEffect(() => {
@@ -37,35 +37,53 @@ function ProfileButton() {
     e.preventDefault();
     dispatch(thunkLogout());
     closeMenu();
+    navigate("/");
+  };
+
+  const handleFavoritesClick = () => {
+    navigate("/favorites");
+    closeMenu();
   };
 
   return (
     <>
-      <button onClick={toggleMenu}>
+      <button onClick={toggleMenu} className="profile-button">
         <FaUserCircle />
       </button>
       {showMenu && (
-        <ul className={"profile-dropdown"} ref={ulRef}>
+        <ul className="profile-dropdown" ref={ulRef}>
           {user ? (
             <>
-              <li>{user.username}</li>
-              <li>{user.email}</li>
+              <li className="dropdown-welcome">Welcome, {user.firstName}</li>
+              <li onClick={handleFavoritesClick} className="dropdown-item">
+                Favorites
+              </li>
               <li>
-                <button onClick={logout}>Log Out</button>
+                <button onClick={logout} className="dropdown-item logout-button">
+                  Log Out
+                </button>
               </li>
             </>
           ) : (
             <>
-              <OpenModalMenuItem
-                itemText="Log In"
-                onItemClick={closeMenu}
-                modalComponent={<LoginFormModal />}
-              />
-              <OpenModalMenuItem
-                itemText="Sign Up"
-                onItemClick={closeMenu}
-                modalComponent={<SignupFormModal />}
-              />
+              <li
+                className="dropdown-item"
+                onClick={() => {
+                  closeMenu();
+                  navigate("/login");
+                }}
+              >
+                Log In
+              </li>
+              <li
+                className="dropdown-item"
+                onClick={() => {
+                  closeMenu();
+                  navigate("/signup");
+                }}
+              >
+                Sign Up
+              </li>
             </>
           )}
         </ul>

@@ -2,6 +2,10 @@ import { createBrowserRouter } from 'react-router-dom';
 import LoginFormPage from '../components/LoginFormPage';
 import SignupFormPage from '../components/SignupFormPage';
 import Layout from './Layout';
+import ProductList from '../components/Products/ProductList'; // Importing ProductList
+import ProductDetail from '../components/Products/ProductDetail'; // Importing ProductDetail
+import FavoritesList from '../components/FavoritesList/FavoritesList'; // Importing FavoritesList
+import ReviewList from '../components/ReviewList/ReviewList'; // Importing ReviewList
 
 export const router = createBrowserRouter([
   {
@@ -9,7 +13,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <h1>Welcome!</h1>,
+        element: <ProductList />, // Display ProductList as the home page
       },
       {
         path: "login",
@@ -18,6 +22,18 @@ export const router = createBrowserRouter([
       {
         path: "signup",
         element: <SignupFormPage />,
+      },
+      {
+        path: "favorites",
+        element: <FavoritesList />, // Route for favorites list
+      },
+      {
+        path: "products/:productId",
+        element: <ProductDetail />, // Route for product detail page
+      },
+      {
+        path: "products/:productId/reviews",
+        element: <ReviewList />, // Route for reviews of a specific product
       },
     ],
   },
