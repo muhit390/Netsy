@@ -4,8 +4,8 @@ from app.models import db
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import SubmitField
-from aws_helpers import ALLOWED_EXTENSIONS, upload_file_to_s3, get_unique_filename
-from app.models import db, Image
+from .aws_helpers import ALLOWED_EXTENSIONS, upload_file_to_s3, get_unique_filename
+from app.models import db
 from flask_login import current_user, login_required
 
 class ImageForm(FlaskForm):

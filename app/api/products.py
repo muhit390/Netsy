@@ -30,6 +30,7 @@ def create_product():
 @products_bp.route('', methods=['GET'])
 def get_products():
     products = Product.query.all()
+    print(products)
     return jsonify([{
         "id": p.id, 
         "name": p.name, 
