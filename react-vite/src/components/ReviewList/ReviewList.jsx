@@ -6,7 +6,7 @@ import ReviewForm from "./ReviewForm";
 import "./Reviews.css";
 
 function ReviewList({ productId }) { 
-  console.log(productId)
+  // console.log(productId)
   const user = useSelector((state) => state.session.user)
   const dispatch = useDispatch();
   const reviews = useSelector((state) => state.reviews[productId] || []);

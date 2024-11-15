@@ -6,6 +6,7 @@ import ReviewList from "../ReviewList/ReviewList";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProductDetails } from "../../redux/products";
+import FavoriteButton from "../FavoritesList/FavoriteButton" 
 
 function ProductDetail() {
   let id = useParams()
@@ -37,6 +38,7 @@ function ProductDetail() {
         </button>
       </div>
       <ReviewList productId={id}/>
+      <FavoriteButton product={id}/>
     </div>
   )
 }
