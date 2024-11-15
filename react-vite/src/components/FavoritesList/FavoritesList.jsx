@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchFavorites } from "../../redux/favorites"; // Assuming you have a fetchFavorites thunk
+import * as favoritesActions from '../../redux/favorites' // Assuming you have a fetchFavorites thunk
 import FavoriteButton from "./FavoriteButton";
 import "./Favorites.css";
 
 function FavoritesList() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.session.user)
   const favorites = useSelector((state) => state.favorites);
 
   useEffect(() => {
-    dispatch(fetchFavorites()); // Fetch favorite products from the backend
+    dispatch(favoritesActions.fetchFavorites); // Fetch favorite products from the backend
   }, [dispatch]);
 
   if (favorites.length === 0) {

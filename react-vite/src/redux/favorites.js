@@ -13,7 +13,7 @@ export const removeFromFavorites = (productId) => ({
   payload: productId,
 });
 
-export const setFavorites = (favorites) => ({
+export const getFavorites = (favorites) => ({
   type: SET_FAVORITES,
   payload: favorites,
 });
@@ -21,11 +21,49 @@ export const setFavorites = (favorites) => ({
 // Thunk for fetching favorites from backend
 export const fetchFavorites = () => async (dispatch) => {
   const response = await fetch("/api/favorites");
-  const data = await response.json();
-  dispatch(setFavorites(data));
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(getFavorites(data));
+    return data;
+  } else {
+    const errors = await response.json()
+    return errors
+  }
 };
 
-const initialState = [];
+export const addFavorite = (product_id) => async (dispatch) => {
+  const response = await fetch(`/api/favorites/${product_id}`, {
+    method: 'POST',
+    body: {'product_id': product_id},
+    headers: {'Content-Type': "application/json"}
+  })
+
+  if (response.ok) {
+    const data = await response.json()
+    dispatch(addToFavorites(data))
+    return data
+  } else {
+    const errors = await response.json()
+    return errors
+  }
+} 
+
+export const removeFavorite = (product_id) => async (dispatch) => {
+  const response = await fetch(`/api/favorites/delete/${product_id}`, {
+    method: 'DELETE',
+  })
+
+  if (response.ok) {
+    const data = await response.json()
+    dispatch(removeFromFavorites(data))
+    return data
+  } else {
+    const errors = await response.json()
+    return errors
+  }
+} 
+
+const initialState = {};
 
 export default function favoritesReducer(state = initialState, action) {
   switch (action.type) {
