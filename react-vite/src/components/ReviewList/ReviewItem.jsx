@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import { deleteReview } from "../../redux/reviews";
+import { fetchReviews, removeReview } from "../../redux/reviews";
 import "./Reviews.css";
 
 function ReviewItem({ review, productId }) {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.session.user);
 
-  const handleDelete = () => {
-    dispatch(deleteReview(review.id, productId)); // Delete review
+  const handleDelete = async () => {
+    await dispatch(removeReview(review.id, productId)); // Delete review
+    await dispatch(fetchReviews(productId))
   };
 
   return (

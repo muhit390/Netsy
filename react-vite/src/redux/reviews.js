@@ -13,26 +13,33 @@ export const addReview = (review) => ({
   payload: review,
 });
 
-export const deleteReview = (reviewId, productId) => ({
+export const deleteReview = (reviewId) => ({
   type: DELETE_REVIEW,
-  payload: { reviewId, productId },
+  payload: { reviewId },
 });
 
 // Thunks
 export const fetchReviews = (productId) => async (dispatch) => {
-  const response = await fetch(`/api/products/${productId}/reviews`);
+  const response = await fetch(`/api/reviews/${productId}`);
   const data = await response.json();
   dispatch(setReviews(data, productId));
 };
 
 export const postReview = (review) => async (dispatch) => {
-  const response = await fetch(`/api/products/${review.productId}/reviews`, {
+  const response = await fetch(`/api/reviews/${review.product_id}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(review),
   });
   const data = await response.json();
-  dispatch(addReview(data));
+  await dispatch(addReview(data));
+};
+
+export const removeReview = (reviewId) => async (dispatch) => {
+  await fetch(`/api/reviews/${reviewId}`, {
+    method: "DELETE",
+  });
+  await dispatch(deleteReview(reviewId));
 };
 
 const initialState = {};
@@ -50,11 +57,9 @@ export default function reviewsReducer(state = initialState, action) {
         ],
       };
     case DELETE_REVIEW:
+      delete state[action.payload.productId]
       return {
-        ...state,
-        [action.payload.productId]: state[action.payload.productId].filter(
-          (review) => review.id !== action.payload.reviewId
-        ),
+        ...state, 
       };
     default:
       return state;

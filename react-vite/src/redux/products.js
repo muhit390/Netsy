@@ -15,6 +15,7 @@ export const fetchProductDetails = (id) => async (dispatch) => {
   const data = await response.json();
   console.log(data)
   dispatch({ type: FETCH_PRODUCT_DETAILS, payload: data });
+  return data
 };
 
 const initialState = {};

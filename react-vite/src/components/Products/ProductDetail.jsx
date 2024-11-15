@@ -1,13 +1,26 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 // import { useParams } from "react-router-dom";
 import { addToCart } from "../../redux/cart";
 import "./Product.css";
+import ReviewList from "../ReviewList/ReviewList";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchProductDetails } from "../../redux/products";
 
 function ProductDetail() {
-  const product = useSelector((state) => state.products.detail);
+  let id = useParams()
+  id = id.productId
+  const [product, setProduct] = useState({})
   console.log(product)
   const dispatch = useDispatch();
-
+  
+  useEffect(() => {
+      const fetchData = async () => {
+        let data = await dispatch(fetchProductDetails(id))
+        setProduct(data)
+      }
+      fetchData()
+  }, [dispatch, id, setProduct])
 
 
 
@@ -23,6 +36,7 @@ function ProductDetail() {
           Add to Cart
         </button>
       </div>
+      <ReviewList productId={id}/>
     </div>
   )
 }

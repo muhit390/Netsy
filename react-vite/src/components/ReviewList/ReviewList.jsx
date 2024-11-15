@@ -5,7 +5,9 @@ import ReviewItem from "./ReviewItem";
 import ReviewForm from "./ReviewForm";
 import "./Reviews.css";
 
-function ReviewList({ productId }) {
+function ReviewList({ productId }) { 
+  console.log(productId)
+  const user = useSelector((state) => state.session.user)
   const dispatch = useDispatch();
   const reviews = useSelector((state) => state.reviews[productId] || []);
 
@@ -23,7 +25,8 @@ function ReviewList({ productId }) {
           <ReviewItem key={review.id} review={review} productId={productId} />
         ))
       )}
-      <ReviewForm productId={productId} />
+      {user ? (<ReviewForm productId={productId} />) : <p>Sign in to post a review!</p>}
+      
     </div>
   );
 }

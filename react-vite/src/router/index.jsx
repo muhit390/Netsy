@@ -6,6 +6,7 @@ import ProductList from '../components/Products/ProductList'; // Importing Produ
 import ProductDetail from '../components/Products/ProductDetail'; // Importing ProductDetail
 import FavoritesList from '../components/FavoritesList/FavoritesList'; // Importing FavoritesList
 import ReviewList from '../components/ReviewList/ReviewList'; // Importing ReviewList
+import Cart from '../components/Cart/Cart';
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: "favorites",
         element: <FavoritesList />, // Route for favorites list
+      },
+      {
+        path: "cart",
+        element: <Cart />,
       },
       {
         path: "products/:productId",

@@ -4,9 +4,10 @@ from app.models import Review, db
 
 reviews_bp = Blueprint('reviews', __name__, url_prefix='/products/<int:product_id>/reviews')
 
-@reviews_bp.route('', methods=['POST'])
+@reviews_bp.route('/<int:product_id>', methods=['POST'])
 def add_review(product_id):
     data = request.get_json()
+    print("/n", data)
     
     if not data.get('user_id') or not data.get('review') or not data.get('rating'):
         return jsonify({"message": "Missing required fields"}), 400
@@ -26,7 +27,7 @@ def add_review(product_id):
         db.session.rollback()
         return jsonify({"message": "Error adding review", "error": str(e)}), 500
 
-@reviews_bp.route('', methods=['GET'])
+@reviews_bp.route('/<int:product_id>', methods=['GET'])
 def get_reviews(product_id):
     reviews = Review.query.filter_by(product_id=product_id).all()
     
@@ -60,9 +61,9 @@ def update_review(product_id, review_id):
         return jsonify({"message": "Error updating review", "error": str(e)}), 500
 
 @reviews_bp.route('/<int:review_id>', methods=['DELETE'])
-def delete_review(product_id, review_id):
+def delete_review(review_id):
 
-    review = Review.query.filter_by(id=review_id, product_id=product_id).first()
+    review = Review.query.filter_by(id=review_id).first()
     
     if not review:
         return jsonify({"message": "Review not found"}), 404

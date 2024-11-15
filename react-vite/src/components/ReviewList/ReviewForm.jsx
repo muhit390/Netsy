@@ -1,17 +1,22 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addReview } from "../../redux/reviews";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchReviews, postReview } from "../../redux/reviews";
 import "./Reviews.css";
 
 function ReviewForm({ productId }) {
+
+  const userId = useSelector((state) => state.session.user.id)
+  
   const dispatch = useDispatch();
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(1);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newReview = { review, rating, productId };
-    dispatch(addReview(newReview));
+    const newReview = { review, rating, product_id: productId, user_id: userId};
+    console.log(newReview)
+    await dispatch(postReview(newReview));
+    await dispatch(fetchReviews(productId))
     setReview("");
     setRating(1);
   };
