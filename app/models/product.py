@@ -8,7 +8,7 @@ class Product(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    owner_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.Text, nullable=False)
     category = db.Column(db.Text)
     description = db.Column(db.Text)
@@ -17,16 +17,16 @@ class Product(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    owner = db.relationship('User', back_populates='product')
+    user = db.relationship('User', back_populates='product')
     reviews = db.relationship('Review', back_populates='product', cascade='all, delete-orphan')
-    product_images = db.relationship('ProductImage', back_populates='product', cascade='all, delete-orphan')
+    product_image = db.relationship('ProductImage', back_populates='product', cascade='all, delete-orphan')
     shopping_cart = db.relationship('ShoppingCart', back_populates='product', cascade='all, delete-orphan')
     favorites = db.relationship('Favorite', back_populates='product', cascade='all, delete-orphan')
 
     def to_dict_basic(self):
         return {
             "id": self.id,
-            "owner_id": self.owner_id,
+            "owner_id": self.user_id,
             "name": self.name,
             "category": self.category,
             "description": self.description,
