@@ -13,8 +13,8 @@ class ShoppingCart(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    user = db.relationship('User', back_populates='carts')
-    cart_items = db.relationship('CartItem', back_populates='carts', cascade='all, delete-orphan')
+    user = db.relationship('User', back_populates='shopping_cart')
+    product = db.relationship("Product", back_populates="shopping_cart")
 
     def to_dict_basic(self):
         return {

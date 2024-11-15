@@ -10,4 +10,15 @@ class ProductImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.BigInteger, db.ForeignKey('products.id'), nullable=False)
     name = db.Column(db.String(255))
-    preview_image = db.Column(db.Boolean, default=False)
+    url = db.Column(db.String, default=False)
+
+    product = db.relationship("Product", back_populates="product_image")
+
+    def to_dict_basic(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "url": self.url,
+            "productId": self.product_id
+        }
+
