@@ -5,7 +5,6 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import SubmitField
 from .aws_helpers import ALLOWED_EXTENSIONS, upload_file_to_s3, get_unique_filename
-from app.models import db
 from flask_login import current_user, login_required
 
 class ImageForm(FlaskForm):
@@ -35,6 +34,13 @@ def add_product_image(product_id):
             return render_template("post_form.html", form=data, errors=[upload])
         
         url = upload["url"]
+        new_image = ProductImage(
+            product_id=product_id,
+            name=data['name'],
+            preview_image=data.get('preview_image', False),
+            image_url=url
+        )
+        
         db.session.add(new_image)
         db.session.commit()
         return redirect("/posts/all")
@@ -46,13 +52,9 @@ def add_product_image(product_id):
         print(data.errors)
         return render_template("post_form.html", form=data, errors=data.errors)
 
-    new_image = ProductImage(
-        product_id=product_id,
-        name=data['name'],
-        preview_image=data.get('preview_image', False)
-    )
+
     
-    return jsonify([
+    return jsonify([  
         {
             "id": new_image.id,
             "productId": new_image.productId,
