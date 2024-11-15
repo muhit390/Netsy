@@ -7,11 +7,11 @@ from .shopping_cart import ShoppingCart
 from .favorite import Favorite
 
 
-# __all__ = [
-#     "User",
-#     "Product",
-#     "Review",
-#     "ProductImage",
-#     "ShoppingCart",
-#     "Favorite"
-# ]
+__all__ = [
+    "User",
+    "Product",
+    "Review",
+    "ProductImage",
+    "ShoppingCart",
+    "Favorite"
+]

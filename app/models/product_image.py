@@ -7,7 +7,7 @@ class ProductImage(db.Model):
     if environment == "production":
         __table_args__ = {'schema': SCHEMA}
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     product_id = db.Column(db.BigInteger, db.ForeignKey('products.id'), nullable=False)
     name = db.Column(db.String(255))
     url = db.Column(db.String, default=False)

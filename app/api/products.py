@@ -7,11 +7,11 @@ products_bp = Blueprint('products', __name__, url_prefix='/products')
 def create_product():
     data = request.get_json()
 
-    if not all(field in data for field in ['user_id', 'name', 'category', 'description', 'price', 'quantity']):
+    if not all(field in data for field in ['owner_id', 'name', 'category', 'description', 'price', 'quantity']):
         return jsonify({"message": "Missing required fields"}), 400
 
     new_product = Product(
-        user_id=data['user_id'],
+        owner_id=data['owner_id'],
         name=data['name'],
         category=data['category'],
         description=data['description'],

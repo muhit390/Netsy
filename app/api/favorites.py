@@ -12,7 +12,7 @@ def add_to_favorites(user_id):
     )
     db.session.add(new_favorite)
     db.session.commit()
-    return jsonify({"message": "Product added to favorites"}), 201
+    return jsonify({"message": "Product added to favorites"}), 201  
 
 @favorites_bp.route('/users/<int:user_id>/favorites', methods=['GET'])
 def get_favorites(user_id):

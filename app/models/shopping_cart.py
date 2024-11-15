@@ -7,7 +7,7 @@ class ShoppingCart(db.Model):
     if environment == "production":
         __table_args__ = {'schema': SCHEMA}
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     product_id = db.Column(db.BigInteger, db.ForeignKey('products.id'), primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
