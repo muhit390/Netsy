@@ -39,13 +39,12 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id', 'user_id', 'product_id')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('product_images',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.BigInteger(), nullable=False),
-    sa.Column('name', sa.String(length=255), nullable=True),
-    sa.Column('preview_image', sa.Boolean(), nullable=True),
+    sa.Column('url', sa.String(length=255), nullable=False),
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -69,7 +68,7 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id', 'user_id', 'product_id')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 

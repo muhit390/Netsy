@@ -5,11 +5,11 @@ from sqlalchemy.sql import text
 # Adds a demo user, you can add other productImages here if you want
 def seed_product_images():
     imageOne = ProductImage(
-        productId='1', url='demo@aa.io')
+        product_id='1', url='demo@aa.io')
     imageTwo = ProductImage(
-        productId='2', url='marnie@aa.io')
+        product_id='2', url='marnie@aa.io')
     imageThree = ProductImage(
-        productId='3', url='bobbie@aa.io')
+        product_id='3', url='bobbie@aa.io')
 
     db.session.add(imageOne)
     db.session.add(imageTwo)

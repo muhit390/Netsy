@@ -3,11 +3,11 @@ from sqlalchemy.sql import text
 
 def seed_shopping_cart():
     cart_item1 = ShoppingCart(
-        user_id=1, product_id=2, quantity=1)
+        user_id=1, product_id=2)
     cart_item2 = ShoppingCart(
-        user_id=2, product_id=1, quantity=2)
+        user_id=2, product_id=1)
     cart_item3 = ShoppingCart(
-        user_id=3, product_id=3, quantity=1)
+        user_id=3, product_id=3)
 
     db.session.add_all([cart_item1, cart_item2, cart_item3])
     db.session.commit()
