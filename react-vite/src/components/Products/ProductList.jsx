@@ -17,6 +17,7 @@ function ProductList() {
     fetchData()
   }, [dispatch]);
 
+
   return (
     <div className="product-list">
       {products.map((product) => (

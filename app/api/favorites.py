@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify, request
 from app.models import Favorite, Product, db
 
-favorites_bp = Blueprint('favorites', __name__)
+favorites_bp = Blueprint('favorites', __name__, url_prefix='/favorites')
 
-@favorites_bp.route('/users/<int:user_id>/favorites', methods=['POST'])
+@favorites_bp.route('/users/<int:user_id>', methods=['POST'])
 def add_to_favorites(user_id):
     data = request.get_json()
     new_favorite = Favorite(
@@ -14,7 +14,7 @@ def add_to_favorites(user_id):
     db.session.commit()
     return jsonify({"message": "Product added to favorites"}), 201
 
-@favorites_bp.route('/users/<int:user_id>/favorites', methods=['GET'])
+@favorites_bp.route('/users/<int:user_id>', methods=['GET'])
 def get_favorites(user_id):
     favorites = Favorite.query.filter_by(user_id=user_id).all()
     favorite_products = []
@@ -28,7 +28,7 @@ def get_favorites(user_id):
             })
     return jsonify(favorite_products)
 
-@favorites_bp.route('/users/<int:user_id>/favorites/<int:product_id>', methods=['DELETE'])
+@favorites_bp.route('/users/<int:user_id>/<int:product_id>', methods=['DELETE'])
 def remove_from_favorites(user_id, product_id):
     favorite = Favorite.query.filter_by(user_id=user_id, product_id=product_id).first()
     if favorite:
