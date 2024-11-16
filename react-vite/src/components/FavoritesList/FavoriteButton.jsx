@@ -32,7 +32,7 @@ function FavoriteButton({ product }) {
 
    const handleFavoriteToggle = async () => {
       console.log(isFavorite);
-      // const button = document.getElementById(`favorite-button`)
+      // const button = document.getElementById(`favorite-buttasfdafsdasfdfasdfasdfsdagasdon`)
       if (isFavorite) {
          await dispatch(removeFavorite(product, user)); // Remove from favorites
          // button.classList.remove("favorite-button-remove")
