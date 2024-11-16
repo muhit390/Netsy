@@ -1,17 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addToFavorites, removeFromFavorites } from "../../redux/favorites";
+import { addFavoriteToBackend, removeFavoriteFromBackend } from "../../redux/favorites";
 import "./Favorites.css";
 
-function FavoriteButton({ product }) {
+function FavoriteButton({ product, userId }) {
+
+  console.log("User ID:", userId); // Debugging
+  console.log("Product:", product);
+  
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites);
   const isFavorite = favorites.some((fav) => fav.id === product.id);
 
   const handleFavoriteToggle = () => {
     if (isFavorite) {
-      dispatch(removeFromFavorites(product.id)); // Remove from favorites
+
+      dispatch(removeFavoriteFromBackend(userId, product.id));
     } else {
-      dispatch(addToFavorites(product)); // Add to favorites
+
+      dispatch(addFavoriteToBackend(userId, product));
     }
   };
 
