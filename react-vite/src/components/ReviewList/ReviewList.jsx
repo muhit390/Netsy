@@ -5,14 +5,17 @@ import ReviewItem from "./ReviewItem";
 import ReviewForm from "./ReviewForm";
 import "./Reviews.css";
 
-function ReviewList({ productId }) { 
-  // console.log(productId)
-  const user = useSelector((state) => state.session.user)
+function ReviewList({ productId }) {
+  console.log(productId)
+  const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
-  const reviews = useSelector((state) => state.reviews[productId] || []);
+  let reviews = useSelector((state) => Object.values(state.reviews));
 
   useEffect(() => {
-    dispatch(fetchReviews(productId)); // Fetch reviews for the product
+    const fetchData = async () => {
+      await dispatch(fetchReviews(productId)); // Fetch reviews for the product
+    };
+    fetchData();
   }, [dispatch, productId]);
 
   return (
@@ -25,10 +28,13 @@ function ReviewList({ productId }) {
           <ReviewItem key={review.id} review={review} productId={productId} />
         ))
       )}
-      {user ? (<ReviewForm productId={productId} />) : <p>Sign in to post a review!</p>}
-      
+      {user ? (
+        <ReviewForm productId={productId} />
+      ) : (
+        <p>Sign in to post a review!</p>
+      )}
     </div>
-  );
+  ) || <p>Loading...</p>;
 }
 
 export default ReviewList;

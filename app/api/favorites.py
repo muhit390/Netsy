@@ -3,7 +3,7 @@ from app.models import Favorite, Product, db
 
 favorites_bp = Blueprint('favorites', __name__, url_prefix='/favorites')
 
-@favorites_bp.route('/users/<int:user_id>', methods=['POST'])
+@favorites_bp.route('/users/<int:user_id>/<int:product_id>', methods=['POST'])
 def add_to_favorites(user_id):
     data = request.get_json()
     new_favorite = Favorite(

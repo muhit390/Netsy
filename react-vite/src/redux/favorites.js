@@ -20,14 +20,14 @@ export const getFavorites = (favorites) => ({
 
 // Thunk for fetching favorites from backend
 export const fetchFavorites = (user_id) => async (dispatch) => {
-  const response = await fetch(`/api/${user_id}/favorites`);
+  const response = await fetch(`/api/favorites/users/${user_id}/`);
   const data = await response.json();
   await dispatch(getFavorites(data));
   return data
 };
 
 export const addFavorite = (product_id, user_id) => async (dispatch) => {
-  const response = await fetch(`/favorites/users/${user_id}`, {
+  const response = await fetch(`/api/favorites/users/${user_id}/${product_id}`, {
     method: 'POST',
     body: {'product_id': product_id},
     headers: {'Content-Type': "application/json"}
@@ -44,7 +44,7 @@ export const addFavorite = (product_id, user_id) => async (dispatch) => {
 } 
 
 export const removeFavorite = (product_id, user_id) => async (dispatch) => {
-  const response = await fetch(`/favorites/users/${user_id}/${product_id}`, {
+  const response = await fetch(`api/favorites/users/${user_id}/${product_id}`, {
     method: 'DELETE',
   })
 

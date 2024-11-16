@@ -37,7 +37,7 @@ function FavoriteButton({ product }) {
       // await dispatch(fetchFavorites())
       setIsFavorite(false);
     } else {
-      await dispatch(addFavorite(product, user)); // Add to favorites
+      await dispatch(addFavorite(product, user.id)); // Add to favorites
       // button.classList.remove("favorite-button-add")
       // button.classList.add("favorite-button-remove")
       // await dispatch(fetchFavorites())
