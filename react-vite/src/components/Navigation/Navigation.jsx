@@ -17,6 +17,16 @@ function Navigation() {
             Cart
           </NavLink>
         </li>
+        <li>
+          <NavLink to="/user/products" className="nav-link" activeClassName="active-link">
+            Manage Products
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/products/new" className="nav-link" activeClassName="active-link">
+            Create Listing
+          </NavLink>
+        </li>
       </ul>
 
       {/* Right-aligned profile button */}

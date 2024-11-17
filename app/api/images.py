@@ -8,8 +8,10 @@ from .aws_helpers import ALLOWED_EXTENSIONS, upload_file_to_s3, get_unique_filen
 from flask_login import current_user, login_required
 
 class ImageForm(FlaskForm):
-    image = FileField("Image File", validators=[FileRequired(), FileAllowed(list(ALLOWED_EXTENSIONS))])
-    submit = SubmitField("Create Post")
+    image = FileField(
+        "Image File", validators=[FileRequired(), FileAllowed(list(ALLOWED_EXTENSIONS))]
+    )
+    submit = SubmitField("Submit")
 
 
 images_bp = Blueprint('images', __name__)
@@ -35,15 +37,13 @@ def add_product_image(product_id):
         
         url = upload["url"]
         new_image = ProductImage(
-            product_id=product_id,
-            name=data['name'],
-            preview_image=data.get('preview_image', False),
-            image_url=url
+        product_id=product_id,
+        url=url
         )
         
         db.session.add(new_image)
         db.session.commit()
-        return redirect("/posts/all")
+        return redirect("/products")
 
     if not data.get('name'):
         return jsonify({"message": "Image name is required"}), 400
@@ -58,8 +58,7 @@ def add_product_image(product_id):
         {
             "id": new_image.id,
             "productId": new_image.productId,
-            "name": new_image.name,
-            "previewImage": new_image.previewImage
+            "url": new_image.url
         }
     ])
     

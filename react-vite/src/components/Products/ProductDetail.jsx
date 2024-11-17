@@ -24,8 +24,8 @@ function ProductDetail() {
   }, [dispatch, id, setProduct])
 
 
-
-  return (
+try {
+  if (product.id) return (
     <div className="product-detail">
       <img src={product.imageUrl} alt={product.name} className="detail-image" />
       <div className="detail-info">
@@ -34,13 +34,18 @@ function ProductDetail() {
         <p className="detail-price">${product.price}</p>
         <p className="detail-description">{product.description}</p>
         <button onClick={() => dispatch(addToCart(product))} className="add-to-cart-button">
-          Add to Cartsss
+          Add to Cart
         </button>
         <FavoriteButton product={product} />
       </div>
       <ReviewList productId={id}/>
     </div>
   )
+  else return <h1>nothing</h1>
+  
+} catch (error) {
+  return <h1></h1>
+}
 }
 
 export default ProductDetail;

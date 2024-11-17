@@ -6,12 +6,13 @@ products_bp = Blueprint('products', __name__, url_prefix='/products')
 @products_bp.route('', methods=['POST'])
 def create_product():
     data = request.get_json()
+    print(data)
 
-    if not all(field in data for field in ['user_id', 'name', 'category', 'description', 'price', 'quantity']):
+    if not all(field in data for field in ['owner_id', 'name', 'category', 'description', 'price', 'quantity']):
         return jsonify({"message": "Missing required fields"}), 400
 
     new_product = Product(
-        user_id=data['user_id'],
+        owner_id=data['owner_id'],
         name=data['name'],
         category=data['category'],
         description=data['description'],
@@ -19,10 +20,11 @@ def create_product():
         quantity=data['quantity']
     )
     
+    
     try:
         db.session.add(new_product)
         db.session.commit()
-        return jsonify({"message": "Product created successfully"}), 201
+        return jsonify({new_product}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error creating product", "error": str(e)}), 500
@@ -32,11 +34,12 @@ def get_products():
     products = Product.query.all()
     return jsonify([{
         "id": p.id, 
+        "owner_id": p.owner_id,
         "name": p.name, 
         "category": p.category, 
         "price": p.price, 
         "quantity": p.quantity,
-        "imageUrl": (ProductImage.query.filter_by(product_id=p.id).first()).url
+        # "imageUrl": (ProductImage.query.filter_by(product_id=p.id).first()).url
     } for p in products])
 
 @products_bp.route('/<int:id>', methods=['GET'])
@@ -64,10 +67,12 @@ def update_product(id):
         return jsonify({"message": "Product not found"}), 404
 
     product.name = data.get('name', product.name)
+    product.owner_id = data.get('owner_id', product.owner_id)
     product.category = data.get('category', product.category)
     product.description = data.get('description', product.description)
     product.price = data.get('price', product.price)
     product.quantity = data.get('quantity', product.quantity)
+    product.imageUrl = data.get("imageUrl", product.imageUrl)
     
     try:
         db.session.commit()
