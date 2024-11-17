@@ -6,7 +6,7 @@ import "./Reviews.css";
 function ReviewForm({ productId }) {
 
   const userId = useSelector((state) => state.session.user.id)
-  
+
   const dispatch = useDispatch();
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(1);

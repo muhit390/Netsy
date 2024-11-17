@@ -10,8 +10,24 @@ function ProductOwnerCard({ product }) {
     navigate(`/products/${id}/edit`);
   };
 
-  const handleDelete = (id) => {
-    
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`/api/products/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        console.log("Product deleted successfully");
+        navigate("/products/owner"); // Redirect to the owner's product list
+      } else {
+        console.error("Failed to delete product");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
   try {
@@ -48,7 +64,7 @@ function ProductOwnerCard({ product }) {
         </div>
       );
   } catch (error) {
-    return <h1>No current spots!</h1>;
+    return <h1>No current products!</h1>;
   }
 }
 

@@ -51,26 +51,52 @@ export const productCreate = (product) => async (dispatch) => {
 };
 
 export const productEdit = (product) => async (dispatch) => {
-  const response = await fetch(`/api/products/${product.id}/edit`, {
-    method: "PUT",
-    body: product,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await response.json();
-  console.log(data);
-  await dispatch({ type: PRODUCT_EDIT, payload: data });
-  return data;
+  if (!product || !product.id) {
+    console.error("Invalid product data provided to productEdit.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/products/${product.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product), // Use the product data here
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update product");
+    }
+
+    const data = await response.json();
+    dispatch({ type: PRODUCT_EDIT, payload: data }); // Dispatch the updated product to the store
+    return data; // Return the updated product for further use
+  } catch (error) {
+    console.error("Error in productEdit:", error);
+    throw error;
+  }
 };
 
+
 export const productDelete = (id) => async (dispatch) => {
-  const response = await fetch(`/api/products/${id}/delete`);
-  const data = await response.json();
-  console.log(data);
-  await dispatch({ type: PRODUCT_DELETE, payload: data });
-  return data;
+  try {
+    const response = await fetch(`/api/products/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete the product");
+    }
+
+    await dispatch({ type: PRODUCT_DELETE, payload: id }); // Dispatch the ID to remove it from the state
+    console.log(`Product with ID ${id} deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error; // Rethrow the error if further handling is needed
+  }
 };
+
 
 
 const initialState = {};

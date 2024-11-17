@@ -42,6 +42,26 @@ export const removeReview = (reviewId) => async (dispatch) => {
   await dispatch(deleteReview(reviewId));
 };
 
+export const updateReview = (review) => async (dispatch) => {
+  const response = await fetch(`/api/reviews/${review.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(review),
+  });
+
+  if (response.ok) {
+    const updatedReview = await response.json();
+    dispatch({
+      type: "UPDATE_REVIEW",
+      payload: updatedReview,
+    });
+  }
+};
+
+
+
 const initialState = {};
 
 export default function reviewsReducer(state = initialState, action) {
@@ -59,7 +79,7 @@ export default function reviewsReducer(state = initialState, action) {
     case DELETE_REVIEW:
       delete state[action.payload.productId]
       return {
-        ...state, 
+        ...state,
       };
     default:
       return state;

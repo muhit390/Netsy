@@ -5,7 +5,7 @@ import Layout from './Layout';
 import ProductList from '../components/Products/ProductList'; // Importing ProductList
 import ProductDetail from '../components/Products/ProductDetail'; // Importing ProductDetail
 import ProductCreate from '../components/Products/ProductCreate'
-// import ProductEdit from '../components/Products/ProductEdit';
+import ProductEdit from '../components/Products/ProductEdit';
 import FavoritesList from '../components/FavoritesList/FavoritesList'; // Importing FavoritesList
 import ReviewList from '../components/ReviewList/ReviewList'; // Importing ReviewList
 import Cart from '../components/Cart/Cart';
@@ -44,10 +44,10 @@ export const router = createBrowserRouter([
         path: "products/:productId",
         element: <ProductDetail />, // Route for product detail page
       },
-      // {
-      //   path: "products/:productId/edit",
-      //   element: <ProductEdit />, // Route for product detail page
-      // },
+      {
+         path: "products/:productId/edit",
+         element: <ProductEdit />, // Route for product detail page
+      },
       {
         path: "products/new",
         element: <ProductCreate />, // Route for product detail page
