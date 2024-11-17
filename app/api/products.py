@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import Product, ProductImage, db
+from app.models import Product, db
 
 products_bp = Blueprint('products', __name__, url_prefix='/products')
 
@@ -7,7 +7,7 @@ products_bp = Blueprint('products', __name__, url_prefix='/products')
 def create_product():
     data = request.get_json()
 
-    if not all(field in data for field in ['owner_id', 'name', 'category', 'description', 'price', 'quantity']):
+    if not all(field in data for field in ['owner_id', 'name', 'category', 'description', 'price', 'quantity', 'imageUrl']):
         return jsonify({"message": "Missing required fields"}), 400
 
     new_product = Product(
@@ -16,14 +16,15 @@ def create_product():
         category=data['category'],
         description=data['description'],
         price=data['price'],
-        quantity=data['quantity']
+        quantity=data['quantity'],
+        imageUrl=data['imageUrl']
     )
     
     
     try:
         db.session.add(new_product)
         db.session.commit()
-        return jsonify({new_product}), 201
+        return jsonify({new_product.to_dict()}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error creating product", "error": str(e)}), 500
@@ -38,13 +39,12 @@ def get_products():
         "category": p.category, 
         "price": p.price, 
         "quantity": p.quantity,
-        "imageUrl": (ProductImage.query.filter_by(product_id=p.id).first()).url
+        "imageUrl": p.imageUrl
     } for p in products])
 
 @products_bp.route('/<int:id>', methods=['GET'])
 def get_product(id):
     product = Product.query.get(id)
-    imageUrl = ProductImage.query.filter_by(product_id=id).first()
     if product:
         return jsonify({
             "id": product.id,
@@ -53,7 +53,7 @@ def get_product(id):
             "description": product.description,
             "price": product.price,
             "quantity": product.quantity,
-            "imageUrl": imageUrl.url
+            "imageUrl": product.imageUrl
         })
     return jsonify({"message": "Product not found"}), 404
 

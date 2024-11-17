@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { productCreate, productImageCreate } from "../../redux/products";
+import { productCreate } from "../../redux/products";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +7,8 @@ import "./ProductForm.css";
 
 
 export default function CreateProduct() {
-const imageSubmit = async () => {
-    const formData = new FormData();
-    formData.append("image", image)
-    console.log(image)
-    await dispatch(productImageCreate(formData))
-}
+
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [name, setName] = useState("");
@@ -20,7 +16,7 @@ const imageSubmit = async () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [image, setImage] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [errors, setErrors] = useState({});
   const [disabled, setDisabled] = useState(false);
   const sessionUser = useSelector((category) => category.session.user);
@@ -39,6 +35,7 @@ const imageSubmit = async () => {
         "Description must be at least 20 characters long.";
     if (!name) validationErrors.name = "Name is required.";
     if (price <= 0) validationErrors.price = "Price must be greater than 0.";
+    if (!imageUrl) validationErrors.imageUrl = "Please include an image url"
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -54,6 +51,7 @@ const imageSubmit = async () => {
         description,
         name,
         category,
+        imageUrl,
         owner_id: sessionUser.id,
       };
 
@@ -68,22 +66,6 @@ const imageSubmit = async () => {
         return;
       }
 
-      const newImage = {
-        url: name,
-        product_id: createdProduct.product_id,
-        preview: true,
-      };
-
-      try {
-        await dispatch(productImageCreate(newImage, newImage.product_id));
-        imageSubmit()
-      } catch (imageError) {
-        setErrors({
-          images: "An error occurred while uploading images. Please try again.",
-        });
-        setDisabled(false);
-        return;
-      }
 
       setCategory("");
       setPrice("");
@@ -157,6 +139,16 @@ const imageSubmit = async () => {
         </div>
 
         <div className="form-group">
+          <label>Image Url</label>
+          <input
+            type="text"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="Image Url"
+          />
+          {errors.imageUrl && <p className="error">{errors.imageUrl}</p>}
+        </div>
+        <div className="form-group">
           <label>Description</label>
           <textarea
             value={description}
@@ -169,15 +161,6 @@ const imageSubmit = async () => {
           {disabled ? "Submitting..." : "Create Product"}
         </button>
 
-        <div className="form-group">
-          <label>Upload Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
-          />
-          {errors.description && <p className="error">{errors.description}</p>}
-        </div>
       </form>
     </div>
   );

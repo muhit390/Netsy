@@ -4,7 +4,6 @@ export const FETCH_PRODUCT_DETAILS = "products/fetchProductDetails";
 export const PRODUCT_DELETE = "products/delete";
 export const PRODUCT_EDIT = "products/edit";
 export const PRODUCT_CREATE = "products/new";
-export const PRODUCT_IMAGE_CREATE = "products/images/new";
 
 export const fetchProducts = () => async (dispatch) => {
   const response = await fetch("/api/products");
@@ -30,6 +29,7 @@ export const productCreate = (product) => async (dispatch) => {
     owner_id: product.owner_id,
     price: product.price,
     quantity: product.quantity,
+    imageUrl: product.imageUrl
   };
   try {
     const response = await fetch("/api/products", {
@@ -40,7 +40,7 @@ export const productCreate = (product) => async (dispatch) => {
       },
     });
     if (response.ok) {
-      let data = response.json();
+      let data = await response.json();
       await dispatch({ type: PRODUCT_CREATE, payload: data });
       return data;
     }
@@ -72,18 +72,6 @@ export const productDelete = (id) => async (dispatch) => {
   return data;
 };
 
-export const productImageCreate = (image, productId) => async (dispatch) => {
-  const response = await fetch(`/api/products/${productId}/images`, {
-    method: "POST",
-    body: image,
-  });
-  if (response.ok) {
-    const { resPost } = await response.json();
-    await dispatch({ type: PRODUCT_IMAGE_CREATE, payload: resPost });
-  } else {
-    console.log("There was an error making your image!");
-  }
-};
 
 const initialState = {};
 
@@ -103,9 +91,6 @@ export default function productsReducer(state = initialState, action) {
       return { ...state };
     case PRODUCT_CREATE:
       state.products[action.payload.id] = action.payload;
-      return { ...state };
-    case PRODUCT_IMAGE_CREATE:
-      state.products.images[action.payload.id] = action.payload;
       return { ...state };
     default:
       return state;

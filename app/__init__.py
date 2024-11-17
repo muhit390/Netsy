@@ -9,7 +9,6 @@ from .models import db, User
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.favorites import favorites_bp
-from .api.images import images_bp
 from .api.products import products_bp
 from .api.reviews import reviews_bp
 from .api.shopping_cart import shopping_cart_bp
@@ -36,7 +35,6 @@ app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(favorites_bp, url_prefix='/api/favorites')
-app.register_blueprint(images_bp, url_prefix='/api/images')
 app.register_blueprint(products_bp, url_prefix='/api/products')
 app.register_blueprint(reviews_bp, url_prefix='/api/reviews')
 app.register_blueprint(shopping_cart_bp, url_prefix='/api/shopping_cart')
