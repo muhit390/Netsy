@@ -6,6 +6,7 @@ import ReviewList from "../ReviewList/ReviewList";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProductDetails } from "../../redux/products";
+import FavoriteButton from "../FavoritesList/FavoriteButton";
 
 function ProductDetail() {
   let id = useParams()
@@ -33,8 +34,9 @@ function ProductDetail() {
         <p className="detail-price">${product.price}</p>
         <p className="detail-description">{product.description}</p>
         <button onClick={() => dispatch(addToCart(product))} className="add-to-cart-button">
-          Add to Cart
+          Add to Cartsss
         </button>
+        <FavoriteButton product={product} />
       </div>
       <ReviewList productId={id}/>
     </div>

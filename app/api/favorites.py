@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from app.models import Favorite, Product, db
 
-favorites_bp = Blueprint('favorites', __name__)
+favorites_bp = Blueprint('favorites', __name__, url_prefix='/favorites')
 
 @favorites_bp.route('/users/<int:user_id>/favorites', methods=['POST'])
 def add_to_favorites(user_id):
