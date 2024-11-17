@@ -24,7 +24,7 @@ def create_product():
     try:
         db.session.add(new_product)
         db.session.commit()
-        return jsonify({new_product.to_dict()}), 201
+        return jsonify(new_product.to_dict_basic()), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error creating product", "error": str(e)}), 500

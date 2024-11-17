@@ -29,7 +29,7 @@ export const productCreate = (product) => async (dispatch) => {
     owner_id: product.owner_id,
     price: product.price,
     quantity: product.quantity,
-    imageUrl: product.imageUrl
+    imageUrl: product.imageUrl,
   };
   try {
     const response = await fetch("/api/products", {
@@ -45,8 +45,8 @@ export const productCreate = (product) => async (dispatch) => {
       return data;
     }
   } catch (error) {
-    let shoe = await error
-    console.log(await shoe.json())
+    let shoe = await error;
+    console.log(await shoe.json());
   }
 };
 
@@ -78,7 +78,6 @@ export const productEdit = (product) => async (dispatch) => {
   }
 };
 
-
 export const productDelete = (id) => async (dispatch) => {
   try {
     const response = await fetch(`/api/products/${id}`, {
@@ -97,8 +96,6 @@ export const productDelete = (id) => async (dispatch) => {
   }
 };
 
-
-
 const initialState = {};
 
 export default function productsReducer(state = initialState, action) {
@@ -107,17 +104,23 @@ export default function productsReducer(state = initialState, action) {
       return [...action.payload];
     case FETCH_PRODUCT_DETAILS:
       return { ...state, detail: action.payload };
-    case PRODUCT_DELETE:
-      delete state.products[action.payload.product_id];
-      return {
-        ...state,
-      };
-    case PRODUCT_EDIT:
-      state.products[action.payload.id] = action.payload;
-      return { ...state };
-    case PRODUCT_CREATE:
-      state.products[action.payload.id] = action.payload;
-      return { ...state };
+    case PRODUCT_DELETE: {
+      const newState = { ...state };
+      delete newState[action.payload.product_id];
+      return newState
+    }
+    case PRODUCT_EDIT: {
+      const newState = { ...state };
+
+      newState[action.payload.id] = action.payload;
+      return newState;
+    }
+    case PRODUCT_CREATE: {
+      const newState = { ...state };
+
+      newState[action.payload.id] = action.payload;
+      return newState;
+    }
     default:
       return state;
   }
