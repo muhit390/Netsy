@@ -70,12 +70,12 @@ const imageSubmit = async () => {
 
       const newImage = {
         url: name,
-        productId: createdProduct,
+        product_id: createdProduct.product_id,
         preview: true,
       };
 
       try {
-        await dispatch(productImageCreate(newImage));
+        await dispatch(productImageCreate(newImage, newImage.product_id));
         imageSubmit()
       } catch (imageError) {
         setErrors({

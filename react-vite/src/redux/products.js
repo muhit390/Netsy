@@ -34,7 +34,7 @@ export const productCreate = (product) => async (dispatch) => {
   try {
     const response = await fetch("/api/products", {
       method: "POST",
-      body,
+      body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
       },
@@ -94,7 +94,7 @@ export default function productsReducer(state = initialState, action) {
     case FETCH_PRODUCT_DETAILS:
       return { ...state, detail: action.payload };
     case PRODUCT_DELETE:
-      delete state.products[action.payload.productId];
+      delete state.products[action.payload.product_id];
       return {
         ...state,
       };

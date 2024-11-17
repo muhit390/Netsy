@@ -45,8 +45,6 @@ def add_product_image(product_id):
         db.session.commit()
         return redirect("/products")
 
-    if not data.get('name'):
-        return jsonify({"message": "Image name is required"}), 400
     
     if data.errors:
         print(data.errors)
@@ -57,7 +55,7 @@ def add_product_image(product_id):
     return jsonify([  
         {
             "id": new_image.id,
-            "productId": new_image.productId,
+            "product_id": new_image.product_id,
             "url": new_image.url
         }
     ])

@@ -6,7 +6,6 @@ products_bp = Blueprint('products', __name__, url_prefix='/products')
 @products_bp.route('', methods=['POST'])
 def create_product():
     data = request.get_json()
-    print(data)
 
     if not all(field in data for field in ['owner_id', 'name', 'category', 'description', 'price', 'quantity']):
         return jsonify({"message": "Missing required fields"}), 400
@@ -39,7 +38,7 @@ def get_products():
         "category": p.category, 
         "price": p.price, 
         "quantity": p.quantity,
-        # "imageUrl": (ProductImage.query.filter_by(product_id=p.id).first()).url
+        "imageUrl": (ProductImage.query.filter_by(product_id=p.id).first()).url
     } for p in products])
 
 @products_bp.route('/<int:id>', methods=['GET'])
