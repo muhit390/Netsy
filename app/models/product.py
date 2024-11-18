@@ -8,7 +8,7 @@ class Product(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    owner_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
+    owner_id = db.Column(db.BigInteger, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)
     name = db.Column(db.Text, nullable=False)
     category = db.Column(db.Text)
     description = db.Column(db.Text)
@@ -18,7 +18,8 @@ class Product(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    user = db.relationship('User', back_populates='product')
+    # Relationships
+    user = db.relationship('User', back_populates='products')
     reviews = db.relationship('Review', back_populates='product', cascade='all, delete-orphan')
     shopping_cart = db.relationship('ShoppingCart', back_populates='product', cascade='all, delete-orphan')
     favorites = db.relationship('Favorite', back_populates='product', cascade='all, delete-orphan')

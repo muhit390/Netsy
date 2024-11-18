@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 // import { useParams } from "react-router-dom";
-import { addToCart } from "../../redux/cart";
+import { addToCartThunk } from "../../redux/cart";
 import "./Product.css";
 import ReviewList from "../ReviewList/ReviewList";
 import { useEffect, useState } from "react";
@@ -33,7 +33,7 @@ try {
         <p className="detail-category">{product.category}</p>
         <p className="detail-price">${product.price}</p>
         <p className="detail-description">{product.description}</p>
-        <button onClick={() => dispatch(addToCart(product))} className="add-to-cart-button">
+        <button onClick={() => dispatch(addToCartThunk(product))} className="add-to-cart-button">
           Add to Cart
         </button>
         <FavoriteButton product={product} />

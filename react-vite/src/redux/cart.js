@@ -26,6 +26,83 @@ export const clearCart = () => ({
   type: CLEAR_CART,
 });
 
+// Thunks
+export const fetchCartItemsThunk = () => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/cart`);
+    if (!res.ok) throw new Error("Failed to fetch cart items");
+
+    const data = await res.json();
+    data.forEach((item) => {
+      dispatch(addToCart({ ...item, quantity: item.quantity || 1 }));
+    });
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+  }
+};
+
+export const addToCartThunk = (product) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/cart`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(product),
+    });
+
+    if (!res.ok) throw new Error("Failed to add item to cart");
+
+    const data = await res.json();
+    dispatch(addToCart({ ...data, quantity: data.quantity || 1 }));
+  } catch (error) {
+    console.error("Error adding item to cart:", error);
+  }
+};
+
+export const removeFromCartThunk = (productId) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/cart/${productId}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Failed to remove item from cart");
+
+    dispatch(removeFromCart(productId));
+  } catch (error) {
+    console.error("Error removing item from cart:", error);
+  }
+};
+
+export const updateQuantityThunk = (productId, quantity) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/cart/${productId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantity }),
+    });
+
+    if (!res.ok) throw new Error("Failed to update cart item quantity");
+
+    const data = await res.json();
+    dispatch(updateQuantity(productId, data.quantity));
+  } catch (error) {
+    console.error("Error updating cart item quantity:", error);
+  }
+};
+
+export const clearCartThunk = () => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/cart/clear`, {
+      method: "POST",
+    });
+
+    if (!res.ok) throw new Error("Failed to clear the cart");
+
+    dispatch(clearCart());
+  } catch (error) {
+    console.error("Error clearing the cart:", error);
+  }
+};
+
 // Initial State
 const initialState = [];
 
