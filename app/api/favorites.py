@@ -7,7 +7,7 @@ favorites_bp = Blueprint('favorites', __name__, url_prefix='/favorites')
 def add_to_favorites(user_id):
     data = request.get_json()
     
-    if not all(field in data for field in ['user_id', 'id']):
+    if not all(field in data for field in ['id']):
         return jsonify({"message": "Missing required fields"}), 400
     
     new_favorite = Favorite(
@@ -29,7 +29,7 @@ def get_favorites(user_id):
             favorite_products.append({
                 "product_id": product.id,
             })
-    return jsonify(favorite_products)
+    return jsonify((favorite_products), 200)
 
 @favorites_bp.route('/users/<int:user_id>/product/<int:product_id>', methods=['DELETE'])
 def remove_from_favorites(user_id, product_id):

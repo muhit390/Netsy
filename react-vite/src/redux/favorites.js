@@ -20,7 +20,7 @@ export const getFavorites = (favorites) => ({
 
 // Thunk for fetching favorites from backend
 export const fetchFavorites = (owner_id) => async (dispatch) => {
-  const response = await fetch(`/api/favorites/user/${owner_id}`);
+  const response = await fetch(`/api/favorites/users/${owner_id}`);
   const data = await response.json();
   await dispatch(getFavorites(data));
   return data
