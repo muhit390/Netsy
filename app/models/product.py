@@ -39,7 +39,14 @@ class Product(db.Model):
     
     def to_dict(self):
         return {
-            **self.to_dict_basic(),
-            "User": self.user.to_dict_basic(),
-            "reviews": [review.to_dict_basic() for review in self.reviews]
+            "id": self.id,
+            "owner_id": self.owner_id,
+            "name": self.name,
+            "category": self.category,
+            "description": self.description,
+            "price": self.price,
+            "quantity": self.quantity,
+            "imageUrl": self.imageUrl,
+            "createdAt": self.created_at,
+            "updatedAt": self.updated_at
         }

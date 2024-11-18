@@ -96,7 +96,7 @@ export const productDelete = (id) => async (dispatch) => {
   }
 };
 
-const initialState = {};
+const initialState = []; 
 
 export default function productsReducer(state = initialState, action) {
   switch (action.type) {

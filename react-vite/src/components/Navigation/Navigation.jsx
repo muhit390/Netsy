@@ -9,7 +9,7 @@ function Navigation() {
       <ul className="nav-list">
         <li>
           <NavLink to="/" className="nav-link" activeClassName="active-link">
-            Home
+            Zetsy Home
           </NavLink>
         </li>
         <li>

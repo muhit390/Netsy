@@ -19,15 +19,12 @@ class Favorite(db.Model):
 
     def to_dict_basic(self):
         return {
-            "id": self.id,
-            "user_id": self.user_id,
             "product_id": self.product_id,
-            "updatedAt": self.updated_at
+            "user_id": self.user_id,
         }
     
     def to_dict(self):
         return {
-            **self.to_dict_basic(),
-            "User": self.user.to_dict_basic(),
-            "images": [image.to_dict() for image in self.product_images]
+            "product_id": self.id,
+            "user_id": self.user_id,
         }
