@@ -21,7 +21,8 @@ class ShoppingCart(db.Model):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "product_id": self.product_id
+            "product_id": self.product_id,
+            "quantity": self.quantity
         }
     
     def to_dict(self):
