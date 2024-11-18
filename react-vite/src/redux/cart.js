@@ -1,12 +1,8 @@
-// src/redux/cart.js
-
-// Action Types
 export const ADD_TO_CART = "cart/addToCart";
 export const REMOVE_FROM_CART = "cart/removeFromCart";
 export const UPDATE_QUANTITY = "cart/updateQuantity";
 export const CLEAR_CART = "cart/clearCart";
 
-// Action Creators
 export const addToCart = (product) => ({
   type: ADD_TO_CART,
   payload: product,
@@ -26,55 +22,75 @@ export const clearCart = () => ({
   type: CLEAR_CART,
 });
 
-// Thunks
-export const fetchCartItemsThunk = () => async (dispatch) => {
+export const fetchCartItemsThunk = (userId) => async (dispatch) => {
   try {
-    const res = await fetch(`/api/cart`);
-    if (!res.ok) throw new Error("Failed to fetch cart items");
+    const response = await fetch(`/api/cart/users/${userId}`, {
+      method: "GET",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch cart items");
+    }
 
-    const data = await res.json();
+    const data = await response.json();
+
+    await dispatch(clearCart());
+
     data.forEach((item) => {
-      dispatch(addToCart({ ...item, quantity: item.quantity || 1 }));
+      dispatch(addToCart({
+        id: item.product_id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity_in_cart || 1,
+      }));
     });
   } catch (error) {
     console.error("Error fetching cart items:", error);
   }
 };
 
-export const addToCartThunk = (product) => async (dispatch) => {
+export const addToCartThunk = (product, user) => async (dispatch) => {
   try {
-    const res = await fetch(`/api/cart`, {
+    const res = await fetch(`/api/cart/users/${user.id}/products/${product.id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(product),
     });
 
+    console.log(res)
+
     if (!res.ok) throw new Error("Failed to add item to cart");
+    else console.log(res)
 
     const data = await res.json();
-    dispatch(addToCart({ ...data, quantity: data.quantity || 1 }));
+
+    await dispatch(addToCart({
+      id: data.product_id,
+      name: data.name,
+      price: data.price,
+      quantity: 1,
+    }));
   } catch (error) {
     console.error("Error adding item to cart:", error);
   }
 };
 
-export const removeFromCartThunk = (productId) => async (dispatch) => {
+export const removeFromCartThunk = (product, userId) => async (dispatch) => {
   try {
-    const res = await fetch(`/api/cart/${productId}`, {
+    const res = await fetch(`/api/cart/users/${userId}/products/${product}`, {
       method: "DELETE",
     });
 
     if (!res.ok) throw new Error("Failed to remove item from cart");
 
-    dispatch(removeFromCart(productId));
+    await dispatch(removeFromCart(product));
   } catch (error) {
     console.error("Error removing item from cart:", error);
   }
 };
 
-export const updateQuantityThunk = (productId, quantity) => async (dispatch) => {
+export const updateQuantityThunk = (productId, quantity, userId) => async (dispatch) => {
   try {
-    const res = await fetch(`/api/cart/${productId}`, {
+    const res = await fetch(`/api/users/${userId}/cart/${productId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity }),
@@ -83,62 +99,92 @@ export const updateQuantityThunk = (productId, quantity) => async (dispatch) => 
     if (!res.ok) throw new Error("Failed to update cart item quantity");
 
     const data = await res.json();
-    dispatch(updateQuantity(productId, data.quantity));
+    await dispatch(updateQuantity(productId, data.quantity));
   } catch (error) {
     console.error("Error updating cart item quantity:", error);
   }
 };
 
-export const clearCartThunk = () => async (dispatch) => {
+export const clearCartThunk = (userId) => async (dispatch) => {
   try {
-    const res = await fetch(`/api/cart/clear`, {
+    const res = await fetch(`/api/users/${userId}/cart/clear`, {
       method: "POST",
     });
 
     if (!res.ok) throw new Error("Failed to clear the cart");
 
-    dispatch(clearCart());
+    await dispatch(clearCart());
   } catch (error) {
     console.error("Error clearing the cart:", error);
   }
 };
 
-// Initial State
-const initialState = [];
+export const checkoutCartThunk = (userId) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/users/${userId}/checkout`, {
+      method: "POST",
+    });
 
-// Helper function to check if item already exists in cart
-const findCartItem = (cart, productId) => cart.find((item) => item.id === productId);
+    if (!res.ok) throw new Error("Failed to checkout");
 
-// Reducer
+    const data = await res.json();
+    await dispatch(clearCart());
+    return data;
+  } catch (error) {
+    console.error("Error during checkout:", error);
+    throw error;
+  }
+};
+
+const initialState = {};
+
+const findCartItem = (cart, productId) => cart[productId];
+
 export default function cartReducer(state = initialState, action) {
   switch (action.type) {
     case ADD_TO_CART: {
       const existingItem = findCartItem(state, action.payload.id);
       if (existingItem) {
-        return state.map((item) =>
-          item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        return {
+          ...state,
+          [action.payload.id]: {
+            ...existingItem,
+            quantity: existingItem.quantity + 1,
+          },
+        };
       } else {
-        return [...state, { ...action.payload, quantity: 1 }];
+        return {
+          ...state,
+          [action.payload.id]: { ...action.payload, quantity: 1 },
+        };
       }
     }
 
-    case REMOVE_FROM_CART:
-      return state.filter((item) => item.id !== action.payload);
+    case REMOVE_FROM_CART: {
+      const newState = { ...state };
+      delete newState[action.payload];
+      return newState;
+    }
 
-    case UPDATE_QUANTITY:
-      return state.map((item) =>
-        item.id === action.payload.productId
-          ? { ...item, quantity: action.payload.quantity }
-          : item
-      );
+    case UPDATE_QUANTITY: {
+      const existingItem = findCartItem(state, action.payload.productId);
+      if (existingItem) {
+        return {
+          ...state,
+          [action.payload.productId]: {
+            ...existingItem,
+            quantity: action.payload.quantity,
+          },
+        };
+      }
+      return state;
+    }
 
     case CLEAR_CART:
-      return [];
+      return {};
 
     default:
       return state;
   }
 }
+

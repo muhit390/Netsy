@@ -1,6 +1,7 @@
 export const ADD_TO_FAVORITES = "favorites/addToFavorites";
 export const REMOVE_FROM_FAVORITES = "favorites/removeFromFavorites";
 export const GET_FAVORITES = "favorites/getFavorites";
+export const GET_FAVORITES_ID = "favorites/getFavoritesById";
 
 // Action creators
 export const addToFavorites = (product) => ({
@@ -8,9 +9,9 @@ export const addToFavorites = (product) => ({
   payload: product,
 });
 
-export const removeFromFavorites = (product) => ({
+export const removeFromFavorites = (product, user) => ({
   type: REMOVE_FROM_FAVORITES,
-  payload: product,
+  payload: {id: product, user_id: user},
 });
 
 export const getFavorites = (favorites) => ({
@@ -18,9 +19,21 @@ export const getFavorites = (favorites) => ({
   payload: favorites,
 });
 
-// Thunk for fetching favorites from backend
+export const getFavoritesId = (favorites) => ({
+  type: GET_FAVORITES_ID,
+  payload: favorites,
+});
+
 export const fetchFavorites = (owner_id) => async (dispatch) => {
-  const response = await fetch(`/api/favorites/users/${owner_id}`);
+  const response = await fetch(`/api/favorites/users/${owner_id}/`);
+  const data = await response.json();
+  await dispatch(getFavorites(data));
+  
+};
+
+// Thunk for fetching favorites from backend
+export const fetchFavoritesId = (owner_id, id) => async (dispatch) => {
+  const response = await fetch(`/api/favorites/users/${owner_id}/product/${id}`);
   const data = await response.json();
   await dispatch(getFavorites(data));
   return data
@@ -28,46 +41,76 @@ export const fetchFavorites = (owner_id) => async (dispatch) => {
 
 export const addFavorite = (product, user) => async (dispatch) => {
   try {
-    let body = {...product, user_id: user.id}
-   
+    let body = product
+    console.log(body)
     const response = await fetch(`/api/favorites/users/${user.id}`, {
       method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        ...body,
+        owner_id: user.id
+      }),
       headers: {
         "Content-Type": "application/json",
       }
     });
     const data = await response.json();
     console.log(data)
-    await dispatch(addToFavorites(data));
+    await dispatch(addToFavorites(body));
     return data
     
   } catch (error) {
-    if (!user || !user.id) {
+    if (!user.id) {
       console.error('User or user.id is undefined');
     }
   }
 };
 
+export const removeFavorite = (product, user) => async (dispatch) => {
+  try {
+    await fetch(`/api/favorites/users/${user.id}/${product.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    await dispatch(removeFromFavorites(product.id, user.id))
+    return {"message": "deleted"}
+  }
+  catch (error) {
+    console.error("Error removing favorite:", error); 
+  }
+}
 
-const initialState = [];
+
+const initialState = {};
 
 export default function favoritesReducer(state = initialState, action) {
   switch (action.type) {
-    case GET_FAVORITES:
-      return [...action.payload];
-    case ADD_TO_FAVORITES:
-      {
-        const newState = [...state]
-        newState.push(action.payload.product_id)
-        return newState
-      }
-    case REMOVE_FROM_FAVORITES:
-    {
-      const newState = {...state}
-      delete newState[action.payload];
+    case GET_FAVORITES: {
+      const newState = {};
+      action.payload.forEach((favorite) => {
+        newState[favorite.id] = favorite;
+      });
       return newState;
     }
+    case GET_FAVORITES_ID: {
+      const newState = {};
+      action.payload.forEach((favorite) => {
+        newState[favorite.id] = favorite;
+      });
+      return newState;
+    }
+    case ADD_TO_FAVORITES:
+      {
+        const newState = {...state}
+        newState[action.payload.id ] = action.payload
+        return newState
+      }
+      case REMOVE_FROM_FAVORITES: {
+        const newState = { ...state };
+        delete newState[action.payload.id];
+        return newState;
+      }
     default:
       return state;
   }

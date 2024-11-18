@@ -1,31 +1,42 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { useParams } from "react-router-dom";
-import { addToCartThunk } from "../../redux/cart";
 import "./Product.css";
 import ReviewList from "../ReviewList/ReviewList";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProductDetails } from "../../redux/products";
+import { fetchFavorites } from "../../redux/favorites";
 import FavoriteButton from "../FavoritesList/FavoriteButton";
 
 function ProductDetail() {
   let id = useParams()
   id = id.productId
-  const [product, setProduct] = useState({})
-  console.log(product)
+  const product = useSelector((state) => state.products.detail)
+  const user = useSelector((state) => state.session.user)
   const dispatch = useDispatch();
+  const [favorites, setFavorites] = useState([])
   
   useEffect(() => {
       const fetchData = async () => {
-        let data = await dispatch(fetchProductDetails(id))
-        setProduct(data)
+        if (!product) await dispatch(fetchProductDetails(id))
       }
       fetchData()
-  }, [dispatch, id, setProduct])
+  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        let data = await dispatch(fetchFavorites(user.id));
+        setFavorites(data)
+      }
+    };
+    fetchData()
+  }, [dispatch, user, product]);
+
 
 
 try {
-  if (product.id) return (
+  return (
     <div className="product-detail">
       <img src={product.imageUrl} alt={product.name} className="detail-image" />
       <div className="detail-info">
@@ -33,15 +44,11 @@ try {
         <p className="detail-category">{product.category}</p>
         <p className="detail-price">${product.price}</p>
         <p className="detail-description">{product.description}</p>
-        <button onClick={() => dispatch(addToCartThunk(product))} className="add-to-cart-button">
-          Add to Cart
-        </button>
-        <FavoriteButton product={product} />
+        <FavoriteButton product={product} favorites={favorites} />
       </div>
       <ReviewList productId={id}/>
     </div>
-  )
-  else return <h1>nothing</h1>
+  ) || <h1>nothing</h1>
   
 } catch (error) {
   return <h1></h1>

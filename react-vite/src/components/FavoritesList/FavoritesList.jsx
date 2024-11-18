@@ -6,13 +6,14 @@ import "./Favorites.css";
 
 function FavoritesList() {
   const dispatch = useDispatch();
-  const favorites = useSelector((state) => Object.values(state.favorites))
-  const allProducts = useSelector((state) => state.products);
+  let favorites = useSelector((state) => (state.favorites));
+  favorites = Object.values(favorites)
   const user = useSelector((state) => state.session.user);
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchFavorites(user.id));
+      let data = await dispatch(fetchFavorites(user.id));
+      console.log(data)
     };
     fetchData();
   }, [dispatch, user]);
@@ -23,30 +24,12 @@ function FavoritesList() {
     return <p className="empty-favorites">No favorites yet.</p>;
   }
 
-
-  let products = Object.values(allProducts)
-  products = products.filter(
-    (product, index, self) =>
-      index === self.findIndex((p) => p.id === product.id)
-  );
-
-  let favoriteValues = []
-    for (let a of favorites) {
-      favoriteValues.push(a.product_id)
-    }
-  
-
-  const filteredProducts = products.filter((product) =>
-    Object.values(favoriteValues).includes(product.id)
-  );
-
-  console.log(filteredProducts, allProducts, favoriteValues)
-
+  console.log(favorites)
 
   return (
     (
       <div className="favorites-list">
-        {filteredProducts.map((product) => (
+        {favorites.map((product) => (
           <div key={product.id} className="favorite-item">
             <img
               src={product.imageUrl}
@@ -57,7 +40,7 @@ function FavoritesList() {
               <h3 className="favorite-name">{product.name}</h3>
               <p className="favorite-price">${product.price}</p>
             </div>
-            <FavoriteButton product={product} user={user} />
+            <FavoriteButton product={product} context={true} />
           </div>
         ))}
       </div>
