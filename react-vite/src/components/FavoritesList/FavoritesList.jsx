@@ -24,17 +24,23 @@ function FavoritesList() {
   }
 
 
-  // let products = Object.values(allProducts)
-  // products = products.filter(
-  //   (product, index, self) =>
-  //     index === self.findIndex((p) => p.id === product.id)
-  // );
-
-  const filteredProducts = allProducts.filter((product) =>
-    Object.values(favorites).includes(product.id)
+  let products = Object.values(allProducts)
+  products = products.filter(
+    (product, index, self) =>
+      index === self.findIndex((p) => p.id === product.id)
   );
 
-  console.log(filteredProducts, allProducts, favorites)
+  let favoriteValues = []
+    for (let a of favorites) {
+      favoriteValues.push(a.product_id)
+    }
+  
+
+  const filteredProducts = products.filter((product) =>
+    Object.values(favoriteValues).includes(product.id)
+  );
+
+  console.log(filteredProducts, allProducts, favoriteValues)
 
 
   return (
