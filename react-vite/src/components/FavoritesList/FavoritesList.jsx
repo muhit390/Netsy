@@ -6,7 +6,7 @@ import "./Favorites.css";
 
 function FavoritesList() {
   const dispatch = useDispatch();
-  const favorites = useSelector((state) => state.favorites)
+  const favorites = useSelector((state) => Object.values(state.favorites))
   const allProducts = useSelector((state) => state.products);
   const user = useSelector((state) => state.session.user);
 
@@ -24,21 +24,17 @@ function FavoritesList() {
   }
 
 
-  let products = Object.values(allProducts)
-  products = products.filter(
-    (product, index, self) =>
-      index === self.findIndex((p) => p.id === product.id)
+  // let products = Object.values(allProducts)
+  // products = products.filter(
+  //   (product, index, self) =>
+  //     index === self.findIndex((p) => p.id === product.id)
+  // );
+
+  const filteredProducts = allProducts.filter((product) =>
+    Object.values(favorites).includes(product.id)
   );
 
-  console.log(products)
-
-  let filteredProducts = []
-  for (let a of products) {
-    if(favorites.includes(a.id)) {
-      filteredProducts.push(a)
-    }
-  }
-  console.log(filteredProducts)
+  console.log(filteredProducts, allProducts, favorites)
 
 
   return (

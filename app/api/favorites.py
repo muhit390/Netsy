@@ -29,7 +29,7 @@ def get_favorites(user_id):
             favorite_products.append({
                 "product_id": product.id,
             })
-    return jsonify((favorite_products), 200)
+    return jsonify(favorite_products)
 
 @favorites_bp.route('/users/<int:user_id>/product/<int:product_id>', methods=['DELETE'])
 def remove_from_favorites(user_id, product_id):

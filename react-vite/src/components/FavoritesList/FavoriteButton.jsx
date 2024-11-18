@@ -15,7 +15,7 @@ function FavoriteButton({ product }) {
       setFavorites(res)
     }
     fetchData()
-  })
+  }, [dispatch, user])
 
   const handleFavoriteToggle = async () => {
     if (isFavorite) {
@@ -25,7 +25,7 @@ function FavoriteButton({ product }) {
     }
   };
 
-  return (
+  if (user) return (
     <button
       onClick={handleFavoriteToggle}
       className={`favorite-button ${isFavorite ? "remove-favorite" : "add-favorite"}`}

@@ -1,6 +1,6 @@
 export const ADD_TO_FAVORITES = "favorites/addToFavorites";
 export const REMOVE_FROM_FAVORITES = "favorites/removeFromFavorites";
-export const GET_FAVORITES = "favorites/setFavorites";
+export const GET_FAVORITES = "favorites/getFavorites";
 
 // Action creators
 export const addToFavorites = (product) => ({
@@ -27,22 +27,26 @@ export const fetchFavorites = (owner_id) => async (dispatch) => {
 };
 
 export const addFavorite = (product, user) => async (dispatch) => {
-  let body = {...product, user_id: user.id}
-  console.log('User object:', user, 'Product:', product, "body", body);
-       if (!user || !user.id) {
-         console.error('User or user.id is undefined');
-       }
-  const response = await fetch(`/api/favorites/users/${user.id}`, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
+  try {
+    let body = {...product, user_id: user.id}
+   
+    const response = await fetch(`/api/favorites/users/${user.id}`, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    const data = await response.json();
+    console.log(data)
+    await dispatch(addToFavorites(data));
+    return data
+    
+  } catch (error) {
+    if (!user || !user.id) {
+      console.error('User or user.id is undefined');
     }
-  });
-  const data = await response.json();
-  console.log(data)
-  await dispatch(addToFavorites(data));
-  return data
+  }
 };
 
 
@@ -51,7 +55,7 @@ const initialState = [];
 export default function favoritesReducer(state = initialState, action) {
   switch (action.type) {
     case GET_FAVORITES:
-      return [state, action.payload];
+      return [...action.payload];
     case ADD_TO_FAVORITES:
       {
         const newState = [...state]
